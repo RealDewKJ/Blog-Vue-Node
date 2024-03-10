@@ -16,13 +16,24 @@ app.use(express.urlencoded({ extended: true }));
 
 const db = require("./src/model");
 
-  db.sequelize.sync({force: true})
+db.sequelize.sync()
   .then(() => {
-    console.log("Drop and Resynce db.");
+    console.log("Synced db.");
+    // initial();
   })
+  .catch((err) => {
+    console.log("Failed to sync db: " + err.message);
+  });
+
+  // db.sequelize.sync({force: true})
+  // .then(() => {
+  //   console.log("Drop and Resynce db.");
+  // })
 app.get("/", (res) => {
     res.json({ message: "Hello world" });   
   });
+
+  require('./src/routes/user.routes')(app);
 
 
 const PORT = process.env.PORT || 3000;

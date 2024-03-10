@@ -11,18 +11,29 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router'
+import { useAccountStore } from '@/stores/account';
+
+const accountStore = useAccountStore()
 
 const route = useRoute()
 
 const activeMenu: Ref<string> = ref('')
 const themeSet: Ref<boolean> = ref(true);
 
-onMounted(() => {
+onMounted(async () => {
   if (route.name) activeMenu.value = route.name as string
-
+  await accountStore.checkAuth()
 })
 
 const toggleTheme = () => {
@@ -44,6 +55,10 @@ const menu = [
 ]
 
 
+const logout = () => {
+  // accountStore.logout()
+}
+
 
 
 </script>
@@ -54,7 +69,7 @@ const menu = [
       <a class="text-3xl font-bold leading-none" href="#">
         <h2 class="ml-1">BLOGAPP</h2>
       </a>
-      <div class="lg:hidden">
+      <div class="lg:hidden absolute right-2">
  
         <Sheet>
           <SheetTrigger as-child>
@@ -169,7 +184,11 @@ const menu = [
 			</li> -->
 
 
-        <li>
+    
+      </ul>
+
+      <!--! End Menu Bar -->
+      <li class="lg:ml-auto list-none mr-7" >
           <Button v-if="themeSet" @click="toggleTheme" variant="ghost">
             <svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR">
               <path fill="currentColor"
@@ -186,15 +205,32 @@ const menu = [
             </svg>
           </Button>
         </li>
-      </ul>
-
-      <!--! End Menu Bar -->
-     
-        <RouterLink :to="{name: 'signin'}" class="hidden lg:inline-block  hover:bg-accent hover:text-accent-foreground lg:ml-auto lg:mr-3 py-2 px-6 text-sm  font-bold  rounded-xl transition duration-200"
+        <RouterLink :to="{name: 'signin'}" v-if="!accountStore.isLoggedIn" class="hidden lg:inline-block  hover:bg-accent hover:text-accent-foreground  lg:mr-3 py-2 px-6 text-sm  font-bold  rounded-xl transition duration-200"
       >  Sign In</RouterLink>
      
-      <RouterLink :to="{name: 'signup'}" class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
-        >Sign up</RouterLink>
+      <RouterLink :to="{name: 'signup'}" v-if="!accountStore.isLoggedIn" class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
+        >Sign Up</RouterLink>
+        <div  v-if="accountStore.isLoggedIn" class="flex items-center space-x-2 mr-3">
+          <DropdownMenu>
+      <DropdownMenuTrigger as-child>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="-ml-3 h-8 data-[state=open]:bg-accent"
+        >
+        <span>{{accountStore.user.firstname}}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem>Profile</DropdownMenuItem>
+      <DropdownMenuItem @click="logout()"> 
+        Logout</DropdownMenuItem>
+      </DropdownMenuContent>
+      </DropdownMenu>
+        </div>
+     
     </nav>
   
 
