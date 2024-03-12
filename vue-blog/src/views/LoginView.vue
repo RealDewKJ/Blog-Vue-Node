@@ -3,8 +3,10 @@ import { ref } from 'vue';
 import type { Ref } from 'vue';
 import { useAccountStore } from '@/stores/account';
 import UserLayout from '@/layouts/UserLayout.vue';
+import { toast } from '@/components/ui/toast/use-toast'
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter()
 const accountStore = useAccountStore()
 const email: Ref<string> = ref('')
 const password: Ref<string> = ref('')
@@ -12,6 +14,10 @@ const password: Ref<string> = ref('')
 const login = async () => {
   try {
     await accountStore.signIn(email.value, password.value)
+    router.push({ name: 'home' });
+    toast({
+    title: 'Login Successfully',
+  })
   } catch (error:any) {
     console.log(error.message, 'error')
   }

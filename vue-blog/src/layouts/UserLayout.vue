@@ -51,12 +51,16 @@ const menu = [
   {
     name: 'About us',
     routePath: 'about'
+  },
+  {
+    name: 'New Story',
+    routePath: 'newstory'
   }
 ]
 
 
 const logout = () => {
-  // accountStore.logout()
+  accountStore.signOut()
 }
 
 
@@ -66,9 +70,9 @@ const logout = () => {
 <template >
   <header>
     <nav class="relative px-4 py-4 flex justify-between items-center bg-transparent">
-      <a class="text-3xl font-bold leading-none" href="#">
+      <RouterLink :to="{ name: 'home' }" class="text-3xl font-bold leading-none" >
         <h2 class="ml-1">BLOGAPP</h2>
-      </a>
+      </RouterLink>
       <div class="lg:hidden absolute right-2">
  
         <Sheet>
@@ -210,7 +214,7 @@ const logout = () => {
      
       <RouterLink :to="{name: 'signup'}" v-if="!accountStore.isLoggedIn" class="hidden lg:inline-block py-2 px-6 bg-blue-500 hover:bg-blue-600 text-sm text-white font-bold rounded-xl transition duration-200"
         >Sign Up</RouterLink>
-        <div  v-if="accountStore.isLoggedIn" class="flex items-center space-x-2 mr-3">
+        <div  v-if="accountStore.isLoggedIn" class="items-center space-x-2 mr-3 hidden lg:inline-block">
           <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <Button

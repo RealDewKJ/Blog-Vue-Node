@@ -25,7 +25,7 @@ exports.signin = async (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({
           message: "Invalid Password!",
-        });
+        }); 
       }
       res.send(generateTokenResponse(user))
     } catch (error) {
@@ -35,6 +35,14 @@ exports.signin = async (req, res) => {
 
 exports.signup = async (req, res) => {
     try {
+      const checkUser = await User.findOne({
+        where: {
+            email: req.body.email,
+        },
+      });
+      if (checkUser) {
+        return res.status(404).send({ message: "User already exists" });
+      }
         const user = await User.create({
             firstname: req.body.firstname,
             lastname: req.body.lastname,
@@ -43,7 +51,7 @@ exports.signup = async (req, res) => {
             isAdmin: 0
         })
         await user.save()
-        if (user) res.send({ message: "User registered successfully!" });
+        if (user) res.send(generateTokenResponse(user));
        
     } catch(err) {
         return res.status(500).send({ message: err.message });

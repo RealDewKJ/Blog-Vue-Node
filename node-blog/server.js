@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const bodyParser = require("body-parser");
 const app = express();
 
 var corsOptions = {
@@ -9,6 +9,9 @@ var corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '5mb' }));
 
 app.use(express.json());
 
@@ -34,6 +37,7 @@ app.get("/", (res) => {
   });
 
   require('./src/routes/user.routes')(app);
+  require('./src/routes/post.routes')(app);
 
 
 const PORT = process.env.PORT || 3000;

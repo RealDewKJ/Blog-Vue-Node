@@ -23,6 +23,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       isAdmin:{
         type: Sequelize.BOOLEAN
+      },
+      imageUrl: {
+        type: Sequelize.TEXT,
+        allowNull: true
       }
     });
     return User;
